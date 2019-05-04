@@ -7,11 +7,16 @@ const app = express();
 //https://ko.wikipedia.org/wiki/HTTP_%EC%83%81%ED%83%9C_%EC%BD%94%EB%93%9C 
 //app이 인풋을 먹으면 아웃풋을 내보낸다. 
 //http200번을 응답하는 상황이되면 
-app.use((req, res) => {
-    res.status(200).json({
-        message: 'It works!'
-    });
-});
+// app.use((req, res) => {
+//     res.status(200).json({
+//         message: 'It works!'
+//     });
+// });
+
+const productRoutes = require('./api/routes/products');
+
+app.use('/products', productRoutes);
+
 
 //PORT는 방번호
 const PORT = 3000;
