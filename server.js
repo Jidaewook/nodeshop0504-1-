@@ -10,6 +10,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 
+const mongoose = require('mongoose');
+
 
 //https://ko.wikipedia.org/wiki/HTTP_%EC%83%81%ED%83%9C_%EC%BD%94%EB%93%9C 
 //app이 인풋을 먹으면 아웃풋을 내보낸다. 
@@ -22,6 +24,15 @@ const bodyParser = require('body-parser');
 
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
+
+//mongooDB connect
+const db = 'mongodb+srv://psatdoctor:passgosi1q2w@cluster0-vqcjp.mongodb.net/test?retryWrites=true';
+
+mongoose.connect(db, {useNewUrlParser: true})
+    //then은 그 다음 상황을 보여주는 경우
+    .then( () => console.log("MongoDB Connected.."))
+    //catch는 에러를 잡는 경우
+    .catch(err => console.log(err));
 
 
 //morgan의 dev버전을 선택해 사용하는 것. 모건의 홈페이지에 가면 다양한 버전을 볼 수 있다.
