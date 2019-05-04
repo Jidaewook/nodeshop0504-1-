@@ -1,12 +1,28 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+
+const productModel = require('../models/product');
+
 
 
 //server에서 들어온 data에 대한 응답 값(현재 req가 없다) res만 보일 것.
+//DB내의 Total Data를 불러오는 작업이 이뤄지는 구간.
 router.get('/', (req, res) => {
-    res.status(200).json({
-       message: 'Handling GET requests to /products' 
-    });
+
+    productModel
+        .find()
+        .then(docs => {
+            console.log(docs);
+            res.status(200).json(docs);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                err: err
+            });
+        });
+
 });
 
 // 특정 제품의 상세페이지 보기
@@ -29,18 +45,31 @@ router.get('/:productId',(req, res) => {
 //server 켜면 postman에서 해당 메소드 통해 확인 가능.
 
 //특정 상세페이지를 삭제하는 코딩도 위와 같으므로, 확장시켜서 연습해볼 것.
+
+//DB에 제품 등록
 router.post('/', (req, res) =>{
 
-    //order에도 이걸 설정해줘라.
-    const product = {
+    const product = new productModel({
+        _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         price: req.body.price
-    }
-
-    res.status(201).json({
-        message: 'Handling POST requests to /products',
-        createdProduct: product
     });
+
+    product
+        .save()
+        .then(result => {
+            console.log(result);
+            res.status(201).json({
+                message: 'Handling POST requests to /products',
+                createdProduct: result
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
 });
 
 router.patch('/', (req, res) => {
