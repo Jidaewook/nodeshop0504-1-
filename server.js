@@ -3,6 +3,9 @@ const http = require('http');
 const express = require('express');
 const app = express();
 
+//morgan은 로그를 꼬박꼬박 보여주는 것
+//모건은 npm으로 설치해야 하는 것
+const morgan = require('morgan');
 
 //https://ko.wikipedia.org/wiki/HTTP_%EC%83%81%ED%83%9C_%EC%BD%94%EB%93%9C 
 //app이 인풋을 먹으면 아웃풋을 내보낸다. 
@@ -16,8 +19,28 @@ const app = express();
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
 
+
+//morgan의 dev버전을 선택해 사용하는 것. 모건의 홈페이지에 가면 다양한 버전을 볼 수 있다.
+app.use(morgan('dev'));
+
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+
+app.use((req, res, next) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    next(error);
+});
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+        error: {
+            message: error.message
+        }
+    });
+});
+
 
 //PORT는 방번호
 const PORT = 3000;
