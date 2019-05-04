@@ -9,8 +9,26 @@ router.get('/', (req, res) => {
     });
 });
 
+// 특정 제품의 상세페이지 보기
+router.get('/:productId',(req, res) => {
+    const id = req.params.productId;
+    //if 구문의 기본적 구조 괄호: 조건식, 배열 등을 알아두고, ===는 등호, !==부등호 임을 확인.
+    if (id === 'special') {
+        res.status(200).json({
+            message: 'You discovered the special ID', 
+            id: id
+        });
+    } else {
+        res.status(200).json({
+            message: 'You passed an ID'
+        });
+    }
+});
+
 
 //server 켜면 postman에서 해당 메소드 통해 확인 가능.
+
+//특정 상세페이지를 삭제하는 코딩도 위와 같으므로, 확장시켜서 연습해볼 것.
 router.post('/', (req, res) =>{
     res.status(201).json({
         message: 'Handling POST requests to /products'
