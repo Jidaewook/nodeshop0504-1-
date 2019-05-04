@@ -30,8 +30,16 @@ router.get('/:productId',(req, res) => {
 
 //특정 상세페이지를 삭제하는 코딩도 위와 같으므로, 확장시켜서 연습해볼 것.
 router.post('/', (req, res) =>{
+
+    //order에도 이걸 설정해줘라.
+    const product = {
+        name: req.body.name,
+        price: req.body.price
+    }
+
     res.status(201).json({
-        message: 'Handling POST requests to /products'
+        message: 'Handling POST requests to /products',
+        createdProduct: product
     });
 });
 

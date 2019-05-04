@@ -7,6 +7,10 @@ const app = express();
 //모건은 npm으로 설치해야 하는 것
 const morgan = require('morgan');
 
+const bodyParser = require('body-parser');
+
+
+
 //https://ko.wikipedia.org/wiki/HTTP_%EC%83%81%ED%83%9C_%EC%BD%94%EB%93%9C 
 //app이 인풋을 먹으면 아웃풋을 내보낸다. 
 //http200번을 응답하는 상황이되면 
@@ -23,8 +27,29 @@ const orderRoutes = require('./api/routes/orders');
 //morgan의 dev버전을 선택해 사용하는 것. 모건의 홈페이지에 가면 다양한 버전을 볼 수 있다.
 app.use(morgan('dev'));
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+
+
+
+
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+        return res.status(200).json({});
+    }
+    next();
+});
+
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
