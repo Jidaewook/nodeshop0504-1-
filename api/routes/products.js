@@ -15,8 +15,26 @@ router.get('/', (req, res) => {
     productModel
         .find()
         .then(docs => {
-            console.log(docs);
-            res.status(200).json(docs);
+            // console.log(docs);
+            // res.status(200).json(docs);
+
+            //좀 더 세련되게 작업하는 것. 정보가 더 많은 변수를 만들어줌으로써 코드는 줄이고, 더 많은 내용을 담을 수 있게 됨.
+            //url을 통해, 세부데이터를 id입력없이 링크를 통해서 확인(get)할 수 있게 된다.
+            const response = {
+                count: docs.length,
+                products: docs.map(doc => {
+                    return{
+                        name: doc.name,
+                        price: doc.price,
+                        _id: doc._id,
+                        request: {
+                            type: "GET",
+                            url: "http://localhost:3000/products/" + doc._id
+                        }
+                    };
+                })
+            };
+            res.status(200).json(response);
         })
         .catch(err => {
             console.log(err);
@@ -51,7 +69,11 @@ router.get('/:productId',(req, res) => {
             if(doc) {
                 res.status(200).json({
                     message: 'docdocdoc success',
-                    product: doc
+                    product: doc,
+                    request: {
+                        type: 'GET',
+                        url: "http://localhost:3000/products/"
+                    }
                 });
             } else {
                 res.status(404).json({
@@ -92,8 +114,19 @@ router.post('/', (req, res) =>{
         .then(result => {
             console.log(result);
             res.status(201).json({
-                message: 'Handling POST requests to /products',
-                createdProduct: result
+                // message: 'Handling POST requests to /products',
+                // createdProduct: result
+                message: 'Created product successfully',
+                createdProduct: {
+                    name: result.name,
+                    price: result.price,
+                    _id: result._id,
+                    request: {
+                        type: 'GET',
+                        url: "http://localhost:3000/products/" + result._id 
+                    }
+                }
+
             });
         })
         .catch(err => {
@@ -135,7 +168,11 @@ router.patch('/:productId', (req, res) => {
             console.log(result);
             res.status(200).json({
                 message: 'Modify Success',
-                product: result
+                request: {
+                    type: 'GET',
+                    url: "http://localhost:3000/products/" + id
+                }
+                
             })
         })
         .catch( err => {
@@ -153,7 +190,12 @@ router.delete('/:productId', (req, res) => {
         .exec()
         .then(result => {
             res.status(200).json({
-                message: 'Deleted Product!'
+                message: 'Deleted Product!',
+                request: {
+                    type: 'POST',
+                    url: "http://localhost:3000/products/",
+                    body: {name: 'String', price: 'String'}
+                }
             });
         })
         .catch(err => {
