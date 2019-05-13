@@ -8,7 +8,7 @@ const orderSchema = mongoose.Schema({
         ref: 'Product',
 
         //require: true는 product에 꼭 있어야 한다는 속성
-        require: true
+        required: true
     },
     quantity: {type: Number, default: 1}
 
