@@ -24,6 +24,8 @@ const mongoose = require('mongoose');
 
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
+const userRouses = require('./api/routes/users');
+
 
 //mongooDB connect
 const db = 'mongodb+srv://psatdoctor:passgosi1q2w@cluster0-vqcjp.mongodb.net/test?retryWrites=true';
@@ -43,7 +45,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
-
+app.use('/users', userRouses);
 
 
 
