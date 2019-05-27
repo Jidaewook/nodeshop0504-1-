@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const bcrypt = require('bcryptjs');
-
+const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 
 //회원가입
@@ -126,5 +126,46 @@ router.delete('/:userId', (req, res) => {
         });
 });
 
+router.post('/login', (req, res) => {
+    userModel.find({ email: req.body.email })
+        .exec()
+        .then(user => {
+            if (user.length < 1) {
+                return res.status(401).json({
+                    message: "Auth failed"
+                });
+            }
+            //사용자가 입력한 패스워드와, 서버가 가지고 있는 이용자의 패스워드를 비교
+            bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+                if (err) {
+                    return res.status(401).json({
+                        message: "Wrong password"
+                    });
+                }
+                if (result) {
+                    const token = jwt.sign({
+                        email: user[0].email,
+                        userId: user[0]._id
+                    },
+                        "secret", { expiresIn: "1h" }
+                    );
+                    return res.status(200).json({
+                        message: "Auth successful",
+                        token: token
+                    });
+
+                }
+                res.status(401).json({
+                    message: "Auth failed"
+                });
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+});
 
 module.exports = router;
