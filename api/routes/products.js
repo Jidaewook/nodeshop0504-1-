@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
+const checkAuth = require('../middleware/check-auth');
 const productModel = require('../models/product');
 
 
@@ -98,7 +98,7 @@ router.get('/:productId',(req, res) => {
 //특정 상세페이지를 삭제하는 코딩도 위와 같으므로, 확장시켜서 연습해볼 것.
 
 //DB에 제품 등록
-router.post('/', (req, res) =>{
+router.post('/', checkAuth, (req, res) =>{
 
     const product = new productModel({
         //_id는 몽구스에서 자동생성되고, name과 price는 body에서 입력해야 한다.
@@ -137,7 +137,7 @@ router.post('/', (req, res) =>{
         });
 });
 
-router.patch('/:productId', (req, res) => {
+router.patch('/:productId', checkAuth, (req, res) => {
     // res.status(200).json({
     //     message: 'Updated products'
     // });
@@ -184,7 +184,7 @@ router.patch('/:productId', (req, res) => {
 });
 
 //특정 id 삭제 메커니즘.
-router.delete('/:productId', (req, res) => {
+router.delete('/:productId', checkAuth, (req, res) => {
     const id = req.params.productId;
     productModel.remove({_id: id})
         .exec()

@@ -4,12 +4,13 @@ const router = express.Router();
 //git에 order router로 업로드.
 
 const mongoose = require('mongoose');
+const checkAuth = require('../middleware/check-auth');
 
 const orderModel = require('../models/order');
 const productModel = require('../models/product');
 
 // order만들기
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
     productModel.findById(req.body.productId)
         .then(product => {
             if(!product){
@@ -51,7 +52,7 @@ router.post('/', (req, res) => {
 
 // orderList 불러오기
 
-router.get('/', (req, res) =>{
+router.get('/', checkAuth, (req, res) =>{
     orderModel.find()
         .select("product quantity _id")
         .exec()
@@ -83,7 +84,7 @@ router.get('/', (req, res) =>{
 
 // orderList 삭제하기
 
-router.delete('/:orderId', (req, res)=> {
+router.delete('/:orderId', checkAuth, (req, res)=> {
     orderModel
         .remove({
             _id: req.params.orderId
